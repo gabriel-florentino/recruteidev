@@ -1,10 +1,10 @@
-
 import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import cookieParser from 'cookie-parser';
+import { httpLogger } from './middlewares/logger';
+import { errorHandler } from './middlewares/errorHandler';
+import { corsMiddleware } from './middlewares/cors';
+import { rateLimiter } from './middlewares/rateLimiter'; // <- aqui
 import routes from './routes';
 
 const app = express();
@@ -12,23 +12,16 @@ const app = express();
 // Segurança básica
 app.use(helmet());
 
-// CORS (você pode ajustar a whitelist depois)
-app.use(cors({
-  origin: ['http://localhost:5173'], // ajuste depois com seu frontend
-  credentials: true,
-}));
+// CORS com whitelist dinâmica
+app.use(corsMiddleware);
+
+// Rate Limiting global
+app.use(rateLimiter); // <- usando o seu limiter modular
 
 // Middlewares globais
 app.use(express.json());
 app.use(cookieParser());
-app.use(morgan('dev'));
-
-// Rate Limiting (ajustável por rota depois se quiser)
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // Limite por IP
-});
-app.use(limiter);
+app.use(httpLogger); // substitui morgan
 
 // Rotas
 app.use(routes);
@@ -37,5 +30,8 @@ app.use(routes);
 app.use((req, res) => {
   res.status(404).json({ error: 'Rota não encontrada' });
 });
+
+// Handler global de erros
+app.use(errorHandler);
 
 export default app;

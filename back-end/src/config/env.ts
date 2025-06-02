@@ -15,6 +15,7 @@ const envSchema = z.object({
   APP_URL: z.string().url().optional(),
   PORT: z.coerce.number().default(3333),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  CORS_WHITELIST: z.string().optional(),
 });
 
 const _env = envSchema.safeParse(process.env);
@@ -24,7 +25,15 @@ if (!_env.success) {
   throw new Error('Invalid environment variables.');
 }
 
-export const env = _env.data;
+// Extraia e converta whitelist pra array
+const corsWhitelist = _env.data.CORS_WHITELIST
+  ? _env.data.CORS_WHITELIST.split(',').map(s => s.trim())
+  : [];
+
+export const env = {
+  ..._env.data,
+  CORS_WHITELIST: corsWhitelist,
+};
 
 export const firebaseServiceAccount = JSON.parse(
   fs.readFileSync(env.FIREBASE_SERVICE_ACCOUNT_PATH, 'utf-8')

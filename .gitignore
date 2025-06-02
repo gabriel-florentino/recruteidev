@@ -1,4 +1,44 @@
+# Node modules - nunca versionar!
 node_modules/
+
+# Lock files (às vezes é útil versionar, mas se não quiser, ignore)
 package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Arquivos de ambiente (variáveis secretas)
 .env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Sistema operacional
 .DS_Store
+Thumbs.db
+
+# Pastas de build/output
+dist/
+build/
+out/
+
+# Firebase key (sua chave secreta)
+firebase-key.json
+firebase-key.*
+
+# VSCode settings
+.vscode/
+
+# Temporários do sistema e editores
+*.swp
+*.swo
+*.tmp
+*.temp
+
+# Debug e coverage
+coverage/
+*.log

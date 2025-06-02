@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                    String   @id @default(uuid())
+  email                 String   @unique
+  senha_hash            String
+  tipo                  TipoUsuario
+  perfil_completo       Boolean  @default(false)
+  criado_em             DateTime @default(now())
+  reset_token           String?  
+  reset_token_expiration DateTime?
+
+  devProfile            DevProfile?
+  companyProfile        CompanyProfile?
+}
+
+model DevProfile {
+  id                  String   @id @default(uuid())
+  user_id             String   @unique
+  nome_completo       String
+  titulo_perfil       String
+  cpf                 String   @unique
+  descricao           String
+  curriculo_url       String
+  portfolio_url       String
+  stacks              String[]
+  senioridade         Senioridade
+  disponibilidade     Disponibilidade[]
+  imagem_url          String
+  cidades_interesse   String[]
+  pretensao_salarial  Float
+  perfil_publico      Boolean
+  mostrar_pretensao   Boolean
+  criado_em           DateTime @default(now())
+  atualizado_em       DateTime @updatedAt
+
+  user                User     @relation(fields: [user_id], references: [id])
+}
+
+model CompanyProfile {
+  id               String   @id @default(uuid())
+  user_id          String   @unique
+  nome_fantasia    String
+  logotipo_url     String
+  titulo_perfil    String
+  cnpj             String   @unique
+  descricao        String
+  criado_em        DateTime @default(now())
+  atualizado_em    DateTime @updatedAt
+
+  user             User     @relation(fields: [user_id], references: [id])
+}
+
+enum TipoUsuario {
+  DEV
+  EMPRESA
+}
+
+enum Senioridade {
+  ESTAGIARIO
+  JUNIOR
+  PLENO
+  SENIOR
+  ESPECIALISTA
+  TECHLEAD
+}
+
+enum Disponibilidade {
+  CLT
+  PJ
+  FREELANCER
+  ESTAGIO
+  VOLUNTARIO
+}

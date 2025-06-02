@@ -1,9 +1,6 @@
-// src/server.ts
-
 import app from './app';
+import { env } from './config/env';
 
-const PORT = process.env.PORT || 3333;
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server rodando na porta ${PORT}`);
+app.listen(env.PORT, () => {
+  console.log(`🚀 Server rodando em ${env.APP_URL ?? `http://localhost:${env.PORT}`}`);
 });

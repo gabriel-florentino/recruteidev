@@ -5,7 +5,7 @@ import { httpLogger } from './middlewares/logger';
 import { errorHandler } from './middlewares/errorHandler';
 import { corsMiddleware } from './middlewares/cors';
 import { rateLimiter } from './middlewares/rateLimiter'; // <- aqui
-import routes from './routes';
+import authRouter from './modules/auth/routes/auth.routes';
 
 const app = express();
 
@@ -24,7 +24,7 @@ app.use(cookieParser());
 app.use(httpLogger); // substitui morgan
 
 // Rotas
-app.use(routes);
+app.use('/auth', authRouter); // Usa o router inteiro aqui
 
 // 404 handler
 app.use((req, res) => {
